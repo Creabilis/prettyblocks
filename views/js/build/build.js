@@ -9092,8 +9092,6 @@ This will fail in production.`);
           current_url: custom_url
         }
       });
-      console.log("changeUrl", custom_url);
-      console.log("force_reload", force_reload);
       prettyBlocksContext.changeUrl(custom_url);
       if (force_reload) {
         window.location.reload();
@@ -9666,6 +9664,13 @@ This will fail in production.`);
         window.history.replaceState({}, "", currentUrl.toString());
       },
       updateFilteredURL(url) {
+        if (url.startsWith("/")) {
+          if (ajax_urls.base_url.endsWith("/")) {
+            url = ajax_urls.base_url + url.substring(1);
+          } else {
+            url = ajax_urls.base_url + url;
+          }
+        }
         let hashIndex = url.indexOf("#");
         if (hashIndex !== -1) {
           url = url.substring(0, hashIndex) + "?prettyblocks=1" + url.substring(hashIndex);
@@ -10066,7 +10071,7 @@ This will fail in production.`);
       link.addEventListener("click", function(e) {
         e.preventDefault();
         let href = link.getAttribute("href");
-        if (href && href !== "#" && (href.includes("http") || href.includes("https"))) {
+        if (href && href !== "#") {
           let context = getContext();
           let params = {
             context,

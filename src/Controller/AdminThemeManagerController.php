@@ -279,6 +279,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
                 'theme_settings' => $settingsUrls,
                 'startup_url' => $startup_url,
                 'prettyblocks_route_generator' => $this->getSFUrl('prettyblocks_route_generator'),
+                'base_url' => $link->getBaseLink(),
             ],
             'trans_app' => [
                 'current_shop' => $translator->trans('Shop in modification', [], 'Modules.Prettyblocks.Admin'),
