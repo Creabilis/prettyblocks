@@ -134,7 +134,7 @@
       </trans-unit>
       <trans-unit id="7881d0858df7b6374c4860512ac028b4">
         <source>Place the element in a column (container)</source>
-        <target>Placer le contenu dans une colonne centrée (container)</target>
+        <target>Ne pas utiliser de container</target>
         <note>Line: </note>
       </trans-unit>
       <trans-unit id="368d9ac76af05f714092bc808a426bfc">

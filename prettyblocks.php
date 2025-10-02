@@ -322,7 +322,7 @@ class PrettyBlocks extends Module implements WidgetInterface
         return [
             'block' => $block,
             'hookName' => $hookName,
-            'configuration' => $configuration,
+            // 'configuration' => $configuration,
         ];
     }
 

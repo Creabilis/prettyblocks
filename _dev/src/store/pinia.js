@@ -205,15 +205,26 @@ export const usePrettyBlocksContext = defineStore('prettyBlocksContext', {
       window.history.replaceState({}, '', currentUrl.toString());
     },
     updateFilteredURL(url) {
+      // Si l'URL commence par "/", on la combine avec base_url
+      if (url.startsWith('/')) {
+        // Check if base_url ends with a slash to avoid double slashes
+        if (ajax_urls.base_url.endsWith('/')) {
+          // Remove the leading slash from url to avoid double slash
+          url = ajax_urls.base_url + url.substring(1);
+        } else {
+          url = ajax_urls.base_url + url;
+        }
+      }
+
       let hashIndex = url.indexOf('#');
       if (hashIndex !== -1) {
-          url = url.substring(0, hashIndex) + '?prettyblocks=1' + url.substring(hashIndex);
+        url = url.substring(0, hashIndex) + '?prettyblocks=1' + url.substring(hashIndex);
       } else if (!url.includes('?')) {
-          url += '?prettyblocks=1';
+        url += '?prettyblocks=1';
       } else if (!url.includes('prettyblocks')) {
-          url += '&prettyblocks=1';
+        url += '&prettyblocks=1';
       }
-      
+
       return url;
     },
     reloadIframe(currentSrc = false) {
