@@ -226,7 +226,7 @@ class PrettyBlocksModel extends ObjectModel
 
         $repeaterDefault = (isset($block['repeater']['groups'])) ? $block['repeater']['groups'] : [];
         $block['states_json'] = $states;
-        $block['config_json'] = json_decode($this->config, true);
+        $block['config_json'] = json_decode((string) $this->config, true);
         $block['state_to_push'] = $this->_formatDefautStateFromBlock($repeaterDefault);
         $block['instance_id'] = $this->instance_id;
         $block['id_prettyblocks'] = $this->id;
