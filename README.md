@@ -4,6 +4,8 @@
 
 # PrettyBlocks
 <br>
+<div style="background-color: #dc2626; color: white; padding: 10px; border-radius: 8px; text-align:center "> PrettyBlocks V4 arrive très prochainement 😉</div>
+<br>
 
 ![Téléchargements](https://img.shields.io/github/downloads/PrestaSafe/prettyblocks/total)
 
