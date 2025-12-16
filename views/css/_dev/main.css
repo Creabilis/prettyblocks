@@ -61,6 +61,7 @@
     padding: var(--pd-5xl);
 }
 /* FAQ */
+.prettyblocks-faq {
 .accordion .accordion-item {
   border-bottom: 1px solid var(--lightgray);
 }
@@ -160,7 +161,7 @@
     margin: 0.5em 0;
     padding: 0 0.5em;
   }
-
+}
 .container_force-full,
 ._force-full{
     width: 100vw;             
