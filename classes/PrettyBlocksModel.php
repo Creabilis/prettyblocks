@@ -474,7 +474,7 @@ class PrettyBlocksModel extends ObjectModel
     public function getDefaultParams()
     {
         $data = json_encode([], true);
-        if (Validate::isJson($this->default_params)) {
+        if (Validate::isJson((string) $this->default_params)) {
             $data = $this->default_params;
         }
 
