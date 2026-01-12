@@ -122,6 +122,10 @@ class PrettyBlocksField
 
         $fields = [];
         foreach ($this->block['states_json'] as $index => $data) {
+            if (!is_array($data)) {
+                continue;
+            }
+
             $stateFields = [];
             foreach ($data as $key => $value) {
                 $value['id_lang'] = $this->id_lang;
