@@ -17,3 +17,77 @@ h2 {
 .color-input .picker-popup {
   left: 0 !important;
 }
+
+.quill-wrapper {
+  border-radius: 4px;
+  background: white;
+  overflow: visible;
+}
+
+.quill-unified-bar {
+  display: flex !important;
+  align-items: center;
+  flex-wrap: wrap;
+  background-color: #fff;
+  border: 1px solid #ccc !important;
+  border-bottom: none !important;
+  gap: 5px;
+}
+
+.custom-btn-selector {
+  display: inline-block !important;
+  visibility: visible !important;
+  appearance: auto !important;
+  -webkit-appearance: menulist !important;
+  width: 120px !important;
+  height: 24px !important;
+  font-size: 13px !important;
+  border: 1px solid #ccc !important;
+  border-radius: 4px;
+  background-image: none !important;
+  color: #333 !important;
+  margin: 0 4px;
+  padding: 0 5px;
+  cursor: pointer;
+  outline: none;
+}
+
+.ql-toolbar.ql-snow {
+  border: none;
+}
+
+.custom-vue-actions {
+  margin-bottom: .75rem;
+}
+
+.btn {
+  display: inline-block;
+  padding: 8px 16px;
+  border-radius: 4px;
+  text-decoration: none !important;
+  font-weight: 600;
+  margin: 2px;
+}
+
+.btn-primary { background-color: #007bff; color: white !important; }
+.btn-secondary { background-color: #6c757d; color: white !important; }
+
+/* Toolbar button for buttonlink */
+.ql-snow .ql-toolbar .ql-buttonlink,
+.ql-snow.ql-toolbar .ql-buttonlink {
+  width: auto !important;
+  padding: 0 7px !important;
+}
+
+.ql-snow .ql-toolbar .ql-buttonlink::after,
+.ql-snow.ql-toolbar .ql-buttonlink::after {
+  content: 'BTN';
+  font-size: 11px;
+  font-weight: 700;
+  color: #444;
+}
+
+.ql-snow .ql-toolbar .ql-buttonlink.ql-active::after,
+.ql-snow.ql-toolbar .ql-buttonlink.ql-active::after {
+  color: #06c;
+}

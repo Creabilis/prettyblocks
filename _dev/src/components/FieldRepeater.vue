@@ -23,6 +23,7 @@ import Editor from '@tinymce/tinymce-vue'
 // vue quill or tinymce
 import { QuillEditor } from '@vueup/vue-quill'
 import htmlEditButton from "quill-html-edit-button";
+import ButtonLinkModule from "../quill/ButtonLinkModule.js";
 
 import '@vueup/vue-quill/dist/vue-quill.snow.css';
 import '@vueup/vue-quill/dist/vue-quill.bubble.css';
@@ -60,6 +61,13 @@ const VueQuillHTMLEditButton = {
         name: 'htmlEditButton',
         module: htmlEditButton,
 }
+
+const VueQuillButtonLink = {
+        name: 'buttonLinkModule',
+        module: ButtonLinkModule,
+}
+
+const quillModules = [VueQuillHTMLEditButton, VueQuillButtonLink]
   
 const formatDateFromString = (date) => {
   return new Date(date)
@@ -91,6 +99,7 @@ const toolbarOptions = [
   [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
   [{ 'align': [] }],
 
+  ['buttonlink'],                                    // custom button-link
   ['clean']                                         // remove formatting button
 ];
 
@@ -135,7 +144,7 @@ const toolbarOptions = [
     <div v-else-if="f.type == 'editor' && (f.provider !== 'tinymce' || f.provider == 'vuequill')" class="clearfix">
       <Title :title="f.label" />
       <div class="bg-white">
-        <QuillEditor :modules="VueQuillHTMLEditButton" v-model:content="f.value"  contentType="html" theme="snow" :toolbar="toolbarOptions" />
+        <QuillEditor :modules="quillModules" v-model:content="f.value"  contentType="html" theme="snow" :toolbar="toolbarOptions" />
       </div>
     </div>
     <div class="my-4" v-if="f.type == 'select'">
