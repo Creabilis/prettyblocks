@@ -358,42 +358,42 @@ class PrettyBlocks extends Module implements WidgetInterface
 
         if ($this->context->controller->php_self == 'product') {
             // product description
-            if (isset($smartyVars['product']['description'])) {
-                $product = $smartyVars['product'];
-                $zone_name = 'product-description-' . $smartyVars['product']['id_product'];
-                // if no blocks on this zone, feed product description
-                if (!HelperBuilder::zoneHasBlock($zone_name) && !filter_var(getenv('DISABLE_AUTO_FEED_ZONE_PRODUCT_DESCRIPTION'))) {
-                    $this->registerBlockToZone($zone_name, 'prettyblocks_product_description');
-                }
-                $description = $this->renderZone(
-                    [
-                        'zone_name' => $zone_name,
-                        'priority' => true,
-                        'alias' => $this->l('Product description'),
-                    ]
-                );
-                $product['description'] = $description;
-                $this->context->smarty->assign('product', $product);
-            }
+            // if (isset($smartyVars['product']['description'])) {
+            //     $product = $smartyVars['product'];
+            //     $zone_name = 'product-description-' . $smartyVars['product']['id_product'];
+            //     // if no blocks on this zone, feed product description
+            //     if (!HelperBuilder::zoneHasBlock($zone_name) && !filter_var(getenv('DISABLE_AUTO_FEED_ZONE_PRODUCT_DESCRIPTION'))) {
+            //         $this->registerBlockToZone($zone_name, 'prettyblocks_product_description');
+            //     }
+            //     $description = $this->renderZone(
+            //         [
+            //             'zone_name' => $zone_name,
+            //             'priority' => true,
+            //             'alias' => $this->l('Product description'),
+            //         ]
+            //     );
+            //     $product['description'] = $description;
+            //     $this->context->smarty->assign('product', $product);
+            // }
 
             // product description short
-            if (isset($smartyVars['product']['description_short'])) {
-                $product = $smartyVars['product'];
-                $zone_name = 'product-description-short-' . $smartyVars['product']['id_product'];
-                // if no blocks on this zone, feed product description
-                if (!HelperBuilder::zoneHasBlock($zone_name) && !filter_var(getenv('DISABLE_AUTO_FEED_ZONE_PRODUCT_DESCRIPTION_SHORT'))) {
-                    $this->registerBlockToZone($zone_name, 'prettyblocks_product_description_short');
-                }
-                $description_short = $this->renderZone(
-                    [
-                        'zone_name' => $zone_name,
-                        'priority' => false,
-                        'alias' => $this->l('Product description short'),
-                    ]
-                );
-                $product['description_short'] = $description_short;
-                $this->context->smarty->assign('product', $product);
-            }
+            // if (isset($smartyVars['product']['description_short'])) {
+            //     $product = $smartyVars['product'];
+            //     $zone_name = 'product-description-short-' . $smartyVars['product']['id_product'];
+            //     // if no blocks on this zone, feed product description
+            //     if (!HelperBuilder::zoneHasBlock($zone_name) && !filter_var(getenv('DISABLE_AUTO_FEED_ZONE_PRODUCT_DESCRIPTION_SHORT'))) {
+            //         $this->registerBlockToZone($zone_name, 'prettyblocks_product_description_short');
+            //     }
+            //     $description_short = $this->renderZone(
+            //         [
+            //             'zone_name' => $zone_name,
+            //             'priority' => false,
+            //             'alias' => $this->l('Product description short'),
+            //         ]
+            //     );
+            //     $product['description_short'] = $description_short;
+            //     $this->context->smarty->assign('product', $product);
+            // }
         }
 
         if ($this->context->controller->php_self == 'category') {

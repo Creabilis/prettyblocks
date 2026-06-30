@@ -117,7 +117,7 @@ class PrettyBlocksMigrate
             Db::getInstance()->update('prettyblocks', [
                 'id_shop' => (int) $block['id_shop'],
                 'id_lang' => (int) $block['id_lang'],
-                'state' => pSQL($block['state']),
+                'state' => pSQL($block['state'], true),
             ], 'id_prettyblocks = ' . $block['id_prettyblocks']);
         }
 
