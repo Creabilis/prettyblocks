@@ -580,11 +580,6 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
         ]);
     }
 
-    private function getTranslator()
-    {
-        return \Context::getContext()->getTranslator();
-    }
-
     /**
      * api.blocks_available
      */
