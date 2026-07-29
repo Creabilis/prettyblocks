@@ -165,12 +165,18 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
      */
     private function getSFUrl($route, $entity = 'sf')
     {
-        $domain = \Tools::getShopDomainSsl(true);
-
-        return $domain . \Link::getUrlSmarty([
+        $url = \Link::getUrlSmarty([
             'entity' => $entity,
             'route' => $route,
         ]);
+
+        // PS9 generates the Symfony route as an absolute URL, PS8 as a path:
+        // only prepend the domain when it is missing, otherwise it is duplicated.
+        if (preg_match('#^(https?:)?//#', $url)) {
+            return $url;
+        }
+
+        return \Tools::getShopDomainSsl(true) . $url;
     }
 
     public function indexAction()

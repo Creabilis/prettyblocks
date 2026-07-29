@@ -255,12 +255,18 @@ class PrettyBlocks extends Module implements WidgetInterface
 
     private function getPrettyBlocksUrl()
     {
-        $domain = Tools::getShopDomainSsl(true);
-
-        return $domain . Link::getUrlSmarty([
+        $url = Link::getUrlSmarty([
             'entity' => 'sf',
             'route' => 'admin_prettyblocks',
         ]);
+
+        // PS9 generates the Symfony route as an absolute URL, PS8 as a path:
+        // only prepend the domain when it is missing, otherwise it is duplicated.
+        if (preg_match('#^(https?:)?//#', $url)) {
+            return $url;
+        }
+
+        return Tools::getShopDomainSsl(true) . $url;
     }
 
     private function loadDefault()
