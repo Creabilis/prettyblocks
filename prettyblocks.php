@@ -396,26 +396,26 @@ class PrettyBlocks extends Module implements WidgetInterface
             // }
         }
 
-        if ($this->context->controller->php_self == 'category') {
-            // categories
-            if (isset($smartyVars['category'])) {
-                $category = $smartyVars['category'];
-                $zone_name = 'category-description-' . $smartyVars['category']['id'];
-                // if no blocks on this zone, feed product description
-                if (!HelperBuilder::zoneHasBlock($zone_name) && !filter_var(getenv('DISABLE_AUTO_FEED_ZONE_CATEGORY_DESCRIPTION'), FILTER_VALIDATE_BOOLEAN)) {
-                    $this->registerBlockToZone($zone_name, 'prettyblocks_category_description');
-                }
-                $description = $this->renderZone(
-                    [
-                        'zone_name' => $zone_name,
-                        'priority' => true,
-                        'alias' => $this->l('Category description'),
-                    ]
-                );
-                $category['description'] = $description;
-                $this->context->smarty->assign('category', $category);
-            }
-        }
+        // if ($this->context->controller->php_self == 'category') {
+        //     // categories
+        //     if (isset($smartyVars['category'])) {
+        //         $category = $smartyVars['category'];
+        //         $zone_name = 'category-description-' . $smartyVars['category']['id'];
+        //         // if no blocks on this zone, feed product description
+        //         if (!HelperBuilder::zoneHasBlock($zone_name) && !filter_var(getenv('DISABLE_AUTO_FEED_ZONE_CATEGORY_DESCRIPTION'), FILTER_VALIDATE_BOOLEAN)) {
+        //             $this->registerBlockToZone($zone_name, 'prettyblocks_category_description');
+        //         }
+        //         $description = $this->renderZone(
+        //             [
+        //                 'zone_name' => $zone_name,
+        //                 'priority' => true,
+        //                 'alias' => $this->l('Category description'),
+        //             ]
+        //         );
+        //         $category['description'] = $description;
+        //         $this->context->smarty->assign('category', $category);
+        //     }
+        // }
         // cms
         if ($this->context->controller->php_self == 'cms') {
             if (isset($smartyVars['cms'])) {
