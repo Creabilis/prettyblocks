@@ -152,6 +152,13 @@ class FieldCore
         if ($this->options) {
             $data['options'] = $this->options;
         }
+        // Creabilis: without this line, the flag is not preserved during the round trip with the
+        // panel. `updateConfig()` reconstructs the field from the payload
+        // sent by the back office: since `allow_html` is missing from it, `secureTextEntry()`
+        // applied `strip_tags()`, and the HTML was lost in the database upon saving.
+        if ($this->allow_html) {
+            $data['allow_html'] = $this->allow_html;
+        }
 
         $data['value'] = $this->format();
 
