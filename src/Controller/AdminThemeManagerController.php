@@ -156,6 +156,56 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
     }
 
     /**
+     * Creabilis: domain (with protocol) currently used to display the back office.
+     * In multishop each shop has its own domain: building the URLs from the
+     * context shop instead of the current request makes the PrettyBlocks
+     * application issue cross origin (CORS) calls, which the browser blocks.
+     *
+     * @return string
+     */
+    private function getCurrentDomain()
+    {
+        $host = \Tools::getHttpHost();
+
+        if (empty($host)) {
+            return \Tools::getShopDomainSsl(true);
+        }
+
+        return \Tools::getProtocol(\Tools::usingSecureMode()) . $host;
+    }
+
+    /**
+     * Creabilis: returns the shop matching the domain currently used, so the front
+     * office URLs (module ajax controller) stay on the same origin as the back office.
+     *
+     * @param int $defaultShopId shop id used when no shop matches the current domain
+     *
+     * @return int
+     */
+    private function getShopIdForCurrentDomain($defaultShopId)
+    {
+        $host = \Tools::getHttpHost(false, false, true);
+
+        if (empty($host)) {
+            return (int) $defaultShopId;
+        }
+
+        $defaultShop = new \Shop((int) $defaultShopId);
+        if (in_array($host, [$defaultShop->domain, $defaultShop->domain_ssl], true)) {
+            return (int) $defaultShopId;
+        }
+
+        foreach (\Shop::getShops(true, null, true) as $shopId) {
+            $shop = new \Shop((int) $shopId);
+            if (in_array($host, [$shop->domain, $shop->domain_ssl], true)) {
+                return (int) $shopId;
+            }
+        }
+
+        return (int) $defaultShopId;
+    }
+
+    /**
      * return Symfony URL from  route
      *
      * @param string $route
@@ -172,11 +222,13 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
 
         // PS9 generates the Symfony route as an absolute URL, PS8 as a path:
         // only prepend the domain when it is missing, otherwise it is duplicated.
-        if (preg_match('#^(https?:)?//#', $url)) {
-            return $url;
+        // Creabilis: the domain is forced to the one of the current request, these
+        // routes need the back office session cookie.
+        if (preg_match('#^(https?:)?//[^/]+#', $url)) {
+            return preg_replace('#^(https?:)?//[^/]+#', $this->getCurrentDomain(), $url, 1);
         }
 
-        return \Tools::getShopDomainSsl(true) . $url;
+        return $this->getCurrentDomain() . $url;
     }
 
     public function indexAction()
@@ -184,12 +236,17 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
         $context = $this->get('prestashop.adapter.legacy.context')->getContext();
 
         $shop = $context->shop;
-        $domain = \Tools::getShopDomainSsl(true);
+        // Creabilis: in multishop the back office can be displayed on any shop
+        // domain: everything loaded or called by the application must stay on
+        // that domain, otherwise the browser blocks the requests (CORS).
+        $ajaxShopId = $this->getShopIdForCurrentDomain((int) $shop->id);
+        $ajaxShop = ($ajaxShopId === (int) $shop->id) ? $shop : new \Shop($ajaxShopId);
+        $domain = $this->getCurrentDomain();
 
         $filesystem = new Filesystem();
         $path = '/modules/prettyblocks/build/';
         $build_dir = _PS_ROOT_DIR_ . $path;
-        $build_dir_https = \Tools::getShopDomainSsl(true) . $shop->physical_uri . ltrim($path, '/');
+        $build_dir_https = $domain . $ajaxShop->physical_uri . ltrim($path, '/');
         $js = [];
         $css = [];
         $js_entry = '';
@@ -225,7 +282,11 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
         $uploadUrl = $this->getSFUrl('prettyblocks_upload');
         $collectionURL = $this->getSFUrl('prettyblocks_collection');
         $link = new \Link();
-        $blockUrl = $link->getModuleLink('prettyblocks', 'ajax');
+        // Creabilis: the ajax endpoint is built on the shop of the current domain, with
+        // the default language of that shop: an url pointing to a language which is not
+        // enabled there would trigger a front office redirect and break the POST.
+        $ajaxLangId = (int) \Configuration::get('PS_LANG_DEFAULT', null, null, $ajaxShopId);
+        $blockUrl = $link->getModuleLink('prettyblocks', 'ajax', [], null, $ajaxLangId ?: null, $ajaxShopId);
         $blockAvailableUrls = $this->getSFUrl('prettyblocks_api_get_blocks_available');
         $settingsUrls = $this->getSFUrl('prettyblocks_theme_settings');
         $shop_url = $context->shop->getBaseUrl(true) . $this->getLangLink($context->language->id, $context, $context->shop->id);
@@ -257,7 +318,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
         return $this->render('@Modules/prettyblocks/views/templates/admin/index.html.twig', [
             'css_back_custom' => $uri,
             'base_url' => $link->getBaseLink(),
-            'favicon_url' => \Tools::getShopDomainSsl(true) . '/modules/' . $module->name . '/views/images/favicon.ico',
+            'favicon_url' => $domain . '/modules/' . $module->name . '/views/images/favicon.ico',
             'module_name' => $module->displayName,
             'shop_name' => $context->shop->name,
             'env' => [
@@ -271,7 +332,7 @@ class AdminThemeManagerController extends FrameworkBundleAdminController
                 'shops' => $shops,
                 'simulate_home' => $symfonyUrl,
                 'search_by_ref' => $symfonyUrl,
-                'adminURL' => $context->link->getAdminBaseLink() . basename(_PS_ADMIN_DIR_),
+                'adminURL' => $domain . __PS_BASE_URI__ . basename(_PS_ADMIN_DIR_),
                 // 'update_ajax' => $updateAjax,
                 'sf' => $sfAdminBlockAPI,
                 'api' => $blockUrl,

@@ -38,6 +38,12 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
     public function init()
     {
         $this->setHeadersForDomains();
+        // Creabilis: CORS preflight, sent without cookie nor ajax token, it has to be
+        // answered before any other check.
+        if (isset($_SERVER['REQUEST_METHOD']) && strtoupper($_SERVER['REQUEST_METHOD']) === 'OPTIONS') {
+            header('HTTP/1.1 204 No Content');
+            exit;
+        }
         if (empty($_POST)) {
             $_POST = json_decode(Tools::file_get_contents('php://input'), true);
             if (!is_array($_POST)) {
@@ -56,19 +62,33 @@ class PrettyBlocksAjaxModuleFrontController extends ModuleFrontController
 
     public function setHeadersForDomains()
     {
-        $shops = Shop::getShops(true, null, true);
-        $shop_domains = [];
-        foreach ($shops as $shop_id) {
-            $shop = new Shop($shop_id);
-            $shop_domains[] = $shop->domain;
+        // Creabilis: the calling origin is allowed only when it is one of the shop
+        // domains, and the headers needed by the preflight are sent with it.
+        $shopDomains = [];
+        foreach (Shop::getShops(true, null, true) as $shopId) {
+            $shop = new Shop($shopId);
+            if (!empty($shop->domain)) {
+                $shopDomains[] = $shop->domain;
+            }
+            if (!empty($shop->domain_ssl)) {
+                $shopDomains[] = $shop->domain_ssl;
+            }
         }
-        $protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https' : 'http';
-        $host = $_SERVER['HTTP_HOST'];
-        $url = $protocol . '://' . $host;
+        $shopDomains = array_values(array_unique($shopDomains));
 
-        if (!in_array($host, $shop_domains)) {
-            header('Access-Control-Allow-Origin: ' . $protocol . '://' . $host);
+        $origin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '';
+        if ($origin !== '') {
+            $originHost = parse_url($origin, PHP_URL_HOST);
+            if ($originHost && in_array($originHost, $shopDomains, true)) {
+                header('Access-Control-Allow-Origin: ' . $origin);
+                header('Access-Control-Allow-Credentials: true');
+                header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+                header('Access-Control-Allow-Headers: Content-Type, Accept, X-Requested-With');
+                header('Access-Control-Max-Age: 600');
+                header('Vary: Origin');
+            }
         }
+
         // register .env
         $env_file = _PS_MODULE_DIR_ . '/prettyblocks/.env';
 
